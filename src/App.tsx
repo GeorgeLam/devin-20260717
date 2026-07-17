@@ -153,7 +153,7 @@ export default function App() {
     }
     const newValue = !(flag.stagingValue as boolean)
     updateStaging(flag.id, newValue)
-    addToast(`${flag.name} is now ${newValue ? 'On' : 'Off'} in staging.`, 'success')
+    addToast(`${flag.name} is now ${newValue ? 'enabled' : 'disabled'} in staging.`, 'success')
   }
 
   function handleEnumChange(flag: Flag, value: string) {
