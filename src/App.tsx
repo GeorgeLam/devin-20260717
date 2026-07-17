@@ -482,19 +482,30 @@ export default function App() {
           <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
             <h3>{detailFlag.name}</h3>
             <p>{detailFlag.description}</p>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Key:</strong> <code className="flag-key">{detailFlag.key}</code>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Owner:</strong> {detailFlag.owner}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Sensitive:</strong> {detailFlag.sensitive ? 'Yes' : 'No'}
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <strong>Values:</strong> Staging {displayValue(detailFlag.stagingValue)} · Production{' '}
-              {displayValue(detailFlag.productionValue)}
-            </div>
+            <table className="flag-meta-table">
+              <tbody>
+                <tr>
+                  <th>Key</th>
+                  <td>
+                    <code className="flag-key">{detailFlag.key}</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Owner</th>
+                  <td>{detailFlag.owner}</td>
+                </tr>
+                <tr>
+                  <th>Sensitive</th>
+                  <td>{detailFlag.sensitive ? 'Yes' : 'No'}</td>
+                </tr>
+                <tr>
+                  <th>Values</th>
+                  <td>
+                    {`Staging ${displayValue(detailFlag.stagingValue)} · Production ${displayValue(detailFlag.productionValue)}`}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <h4 className="section-title">Audit log</h4>
             <div className="audit-table-wrapper">
               <table className="audit-table">

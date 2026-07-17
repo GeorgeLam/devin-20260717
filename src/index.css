@@ -928,6 +928,40 @@ select:focus {
   background: var(--bg-subtle);
 }
 
+.flag-meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.flag-meta-table th,
+.flag-meta-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.flag-meta-table th {
+  width: 120px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.flag-meta-table td {
+  color: var(--text-primary);
+}
+
+.flag-meta-table tr:last-child th,
+.flag-meta-table tr:last-child td {
+  border-bottom: none;
+}
+
 .panel-empty {
   color: var(--text-muted);
   font-size: 14px;
