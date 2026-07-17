@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { KycCase, KycStatus, KycRiskLevel } from './kycTypes'
 import { useKycStore } from './kycStore'
-
-const currentUser = 'demo-user'
+import { useCurrentUser, initialsFromName } from './user'
 
 const STATUS_LABELS: Record<KycStatus, string> = {
   'in-review': 'In review',
@@ -119,17 +118,6 @@ function riskBadgeClass(risk: KycRiskLevel): string {
   }
 }
 
-function initialsFromName(name: string): string {
-  const parts = name.split(/[.\-_\s]+/).filter(Boolean)
-  if (parts.length === 0) return '?'
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-}
-
-function maybeCurrentUserInitials(name?: string): string | null {
-  return name ? initialsFromName(name) : null
-}
-
 function ShieldCheckIcon(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -167,6 +155,7 @@ function XIcon(props: { className?: string }) {
 }
 
 export default function KycQueue() {
+  const { currentUser } = useCurrentUser()
   const { cases, assignCase, unassignCase, approveCase, rejectCase, requestInfo, reopenCase, addNote } = useKycStore()
   const [activeTab, setActiveTab] = useState<KycStatus>('in-review')
   const [search, setSearch] = useState('')
@@ -351,7 +340,7 @@ export default function KycQueue() {
                   className={classNames('kyc-list-assignee', !item.assignedTo && 'kyc-list-assignee-unassigned')}
                   title={item.assignedTo ? `Assigned to ${item.assignedTo}` : 'Unassigned'}
                 >
-                  {item.assignedTo ? maybeCurrentUserInitials(item.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+                  {item.assignedTo ? initialsFromName(item.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
                 </div>
               </div>
               <div className="kyc-list-name">{item.applicant.fullName}</div>

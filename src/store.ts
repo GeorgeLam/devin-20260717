@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import type { AppState, AuditEvent, ChangeRequest, Flag, FlagValue } from './types'
 import { initialFlags, initialRequests } from './data'
+import { getCurrentUser } from './user'
 
 const STORAGE_KEY = 'ff-admin-demo-state'
-
-const currentUser = 'demo-user'
 
 function generateId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -36,7 +35,7 @@ function addAuditEvent(
     action,
     oldValue,
     newValue,
-    actor: currentUser,
+    actor: getCurrentUser(),
     timestamp: new Date().toISOString(),
   }
   return {
@@ -85,7 +84,7 @@ export function useFlagStore() {
           ...prev.requests[existingIndex],
           previousValue: flag.productionValue,
           requestedValue: value,
-          requestedBy: currentUser,
+          requestedBy: getCurrentUser(),
           requestedAt: now,
           reason,
         }
@@ -101,7 +100,7 @@ export function useFlagStore() {
         environment: 'production',
         previousValue: flag.productionValue,
         requestedValue: value,
-        requestedBy: currentUser,
+        requestedBy: getCurrentUser(),
         requestedAt: now,
         reason,
         status: 'pending',
@@ -126,7 +125,7 @@ export function useFlagStore() {
         ...request,
         status: decision,
         reviewedAt: new Date().toISOString(),
-        reviewedBy: currentUser,
+        reviewedBy: getCurrentUser(),
       }
 
       let updatedFlag = flag

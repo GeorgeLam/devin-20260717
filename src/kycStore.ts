@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import type { KycCase, KycAuditEvent } from './kycTypes'
 import { initialKycCases } from './kycData'
+import { getCurrentUser } from './user'
 
 const STORAGE_KEY = 'kyc-review-queue-state'
-const currentUser = 'demo-user'
 
 function generateId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -32,7 +32,7 @@ function addAuditEvent(
     id: generateId('audit'),
     caseId: item.id,
     action,
-    actor: currentUser,
+    actor: getCurrentUser(),
     timestamp: now,
     ...meta,
   }
@@ -59,15 +59,15 @@ export function useKycStore() {
 
   function assignCase(caseId: string) {
     updateCase(caseId, (item) => {
-      if (item.assignedTo === currentUser) return item
+      if (item.assignedTo === getCurrentUser()) return item
       const updated = {
         ...item,
-        assignedTo: currentUser,
+        assignedTo: getCurrentUser(),
         assignedAt: new Date().toISOString(),
       }
       return addAuditEvent(updated, 'assigned', {
         metadata: {
-          assignedTo: currentUser,
+          assignedTo: getCurrentUser(),
           previouslyAssignedTo: item.assignedTo ?? null,
         },
       })
@@ -82,7 +82,7 @@ export function useKycStore() {
       const updated: KycCase = {
         ...item,
         status: 'approved',
-        reviewedBy: currentUser,
+        reviewedBy: getCurrentUser(),
         reviewedAt: now,
         lastStatusAt: now,
       }
@@ -98,7 +98,7 @@ export function useKycStore() {
       const updated: KycCase = {
         ...item,
         status: 'rejected',
-        reviewedBy: currentUser,
+        reviewedBy: getCurrentUser(),
         reviewedAt: now,
         lastStatusAt: now,
         rejectionReason: reason,
@@ -156,7 +156,7 @@ export function useKycStore() {
         ...item,
         notes: [
           ...item.notes,
-          { id: generateId('note'), author: currentUser, text: text.trim(), timestamp: now },
+          { id: generateId('note'), author: getCurrentUser(), text: text.trim(), timestamp: now },
         ],
       }
       return addAuditEvent(updated, 'note_added', { note: text.trim() })
@@ -165,14 +165,14 @@ export function useKycStore() {
 
   function unassignCase(caseId: string) {
     updateCase(caseId, (item) => {
-      if (item.assignedTo !== currentUser) return item
+      if (item.assignedTo !== getCurrentUser()) return item
       const updated: KycCase = {
         ...item,
         assignedTo: undefined,
         assignedAt: undefined,
       }
       return addAuditEvent(updated, 'unassigned', {
-        metadata: { previouslyAssignedTo: currentUser },
+        metadata: { previouslyAssignedTo: getCurrentUser() },
       })
     })
   }

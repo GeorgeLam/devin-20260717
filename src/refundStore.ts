@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import type { RefundRequest, RefundStatus, RefundAuditEvent, RefundNote } from './refundTypes'
 import { initialRefunds } from './refundData'
+import { getCurrentUser } from './user'
 
 const STORAGE_KEY = 'refunds-dashboard-state'
-const currentUser = 'demo-user'
 
 function generateId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -32,7 +32,7 @@ function addAuditEvent(
     id: generateId('audit'),
     refundId: item.id,
     action,
-    actor: currentUser,
+    actor: getCurrentUser(),
     timestamp: now,
     ...meta,
   }
@@ -61,7 +61,7 @@ export function useRefundStore() {
     if (!text.trim()) return
     updateRefund(refundId, (item) => {
       const now = new Date().toISOString()
-      const note: RefundNote = { id: generateId('note'), author: currentUser, text: text.trim(), timestamp: now }
+      const note: RefundNote = { id: generateId('note'), author: getCurrentUser(), text: text.trim(), timestamp: now }
       const updated: RefundRequest = { ...item, notes: [...item.notes, note] }
       return addAuditEvent(updated, 'note_added', { note: text.trim() })
     })
@@ -69,17 +69,17 @@ export function useRefundStore() {
 
   function assignRefund(refundId: string) {
     updateRefund(refundId, (item) => {
-      if (item.assignedTo === currentUser) return item
+      if (item.assignedTo === getCurrentUser()) return item
       const updated: RefundRequest = {
         ...item,
-        assignedTo: currentUser,
+        assignedTo: getCurrentUser(),
         assignedAt: new Date().toISOString(),
       }
       return addAuditEvent(updated, 'assigned', {
         previousStatus: item.status,
         newStatus: item.status,
         metadata: {
-          assignedTo: currentUser,
+          assignedTo: getCurrentUser(),
           previouslyAssignedTo: item.assignedTo ?? null,
         },
       })
@@ -88,14 +88,14 @@ export function useRefundStore() {
 
   function unassignRefund(refundId: string) {
     updateRefund(refundId, (item) => {
-      if (item.assignedTo !== currentUser) return item
+      if (item.assignedTo !== getCurrentUser()) return item
       const updated: RefundRequest = {
         ...item,
         assignedTo: undefined,
         assignedAt: undefined,
       }
       return addAuditEvent(updated, 'unassigned', {
-        metadata: { previouslyAssignedTo: currentUser },
+        metadata: { previouslyAssignedTo: getCurrentUser() },
       })
     })
   }
@@ -111,7 +111,7 @@ export function useRefundStore() {
         lastStatusAt: now,
         updatedAt: now,
         ...(status === 'approved' || status === 'rejected' || status === 'failed' || status === 'processed'
-          ? { reviewedBy: currentUser, reviewedAt: now }
+          ? { reviewedBy: getCurrentUser(), reviewedAt: now }
           : {}),
       }
       const mapAction: Record<RefundStatus, RefundAuditEvent['action']> = {
@@ -173,7 +173,7 @@ export function useRefundStore() {
         lastStatusAt: now,
         updatedAt: now,
         failureReason: reason,
-        reviewedBy: currentUser,
+        reviewedBy: getCurrentUser(),
         reviewedAt: now,
       }
       return addAuditEvent(updated, 'failed', {

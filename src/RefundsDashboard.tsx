@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { RefundRequest, RefundStatus } from './refundTypes'
 import { useRefundStore } from './refundStore'
-
-const currentUser = 'demo-user'
+import { useCurrentUser, initialsFromName } from './user'
 
 const STATUS_LABELS: Record<RefundStatus, string> = {
   'pending-review': 'Pending review',
@@ -137,13 +136,6 @@ function paymentMethodLabel(method: string): string {
   return map[method] || method
 }
 
-function initialsFromName(name: string): string {
-  const parts = name.split(/[.\-_\s]+/).filter(Boolean)
-  if (parts.length === 0) return '?'
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-}
-
 function UserIcon(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -182,6 +174,7 @@ function AlertIcon(props: { className?: string }) {
 }
 
 export default function RefundsDashboard() {
+  const { currentUser } = useCurrentUser()
   const {
     refunds,
     assignRefund,

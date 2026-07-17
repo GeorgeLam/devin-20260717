@@ -3,6 +3,7 @@ import type { Flag, FlagValue, Environment, ChangeRequest } from './types'
 import { useFlagStore } from './store'
 import KycQueue from './KycQueue'
 import RefundsDashboard from './RefundsDashboard'
+import { useCurrentUser, USERS, initialsFromName } from './user'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -94,11 +95,10 @@ function classNames(...classes: (string | false | undefined)[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const currentUser = 'demo-user'
-
 type Page = 'flags' | 'approvals' | 'kyc' | 'refunds'
 
 export default function App() {
+  const { currentUser, setCurrentUser } = useCurrentUser()
   const { flags, pendingRequests, updateStaging, requestProductionChange, approveRequest, rejectRequest } = useFlagStore()
   const [page, setPage] = useState<Page>('flags')
   const [env, setEnv] = useState<Environment>('staging')
@@ -193,11 +193,21 @@ export default function App() {
 
         <div className="sidebar-footer">
           <div className="user-row">
-            <div className="avatar">DU</div>
+            <div className="avatar">{initialsFromName(currentUser)}</div>
             <div>
-              <div className="user-name">demo-user</div>
+              <div className="user-name">{USERS.find((u) => u.id === currentUser)?.name || currentUser}</div>
               <div className="user-role">Internal admin</div>
             </div>
+          </div>
+          <div className="user-switch-row">
+            <label htmlFor="user-switch">Acting as</label>
+            <select id="user-switch" value={currentUser} onChange={(e) => setCurrentUser(e.target.value)}>
+              {USERS.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </aside>
@@ -225,7 +235,7 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-actions">
-            <div className="avatar">DU</div>
+            <div className="avatar" title={currentUser}>{initialsFromName(currentUser)}</div>
           </div>
         </header>
 
