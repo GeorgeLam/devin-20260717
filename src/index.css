@@ -244,6 +244,30 @@ body {
   flex-wrap: wrap;
 }
 
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-wrapper label {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.sort-wrapper select {
+  min-width: 180px;
+}
+
 .tabs {
   display: inline-flex;
   background: var(--bg-subtle);
@@ -887,8 +911,17 @@ select:focus {
     align-items: stretch;
   }
 
-  .search-wrapper {
+  .toolbar-right {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .search-wrapper,
+  .sort-wrapper,
+  .sort-wrapper select {
     max-width: 100%;
+    width: 100%;
   }
 
   .request-row {

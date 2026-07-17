@@ -13,6 +13,24 @@ const STATUS_LABELS: Record<KycStatus, string> = {
 
 const STATUS_ORDER: KycStatus[] = ['in-review', 'approved', 'rejected', 'waiting-for-info']
 
+const RISK_WEIGHT: Record<KycRiskLevel, number> = {
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
+}
+
+const SORT_OPTIONS: { value: string; label: string }[] = [
+  { value: 'lastStatusAt-desc', label: 'Time in status: newest first' },
+  { value: 'lastStatusAt-asc', label: 'Time in status: oldest first' },
+  { value: 'submittedAt-desc', label: 'Submitted: newest first' },
+  { value: 'submittedAt-asc', label: 'Submitted: oldest first' },
+  { value: 'name-asc', label: 'Name: A-Z' },
+  { value: 'name-desc', label: 'Name: Z-A' },
+  { value: 'risk-desc', label: 'Risk: highest first' },
+  { value: 'risk-asc', label: 'Risk: lowest first' },
+]
+
 const REJECT_REASONS = [
   'Document unclear / illegible',
   'Expired document',
@@ -152,6 +170,7 @@ export default function KycQueue() {
   const { cases, assignCase, approveCase, rejectCase, requestInfo, reopenCase, addNote } = useKycStore()
   const [activeTab, setActiveTab] = useState<KycStatus>('in-review')
   const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('lastStatusAt-desc')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [rejecting, setRejecting] = useState<KycCase | null>(null)
   const [rejectReason, setRejectReason] = useState('')
@@ -172,10 +191,24 @@ export default function KycQueue() {
   }, [cases, search])
 
   const filteredCases = useMemo(() => {
+    const [field, direction] = sortBy.split('-')
+    const dir = direction === 'asc' ? 1 : -1
     return searchMatches
       .filter((c) => c.status === activeTab)
-      .sort((a, b) => new Date(b.lastStatusAt).getTime() - new Date(a.lastStatusAt).getTime())
-  }, [searchMatches, activeTab])
+      .sort((a, b) => {
+        let cmp = 0
+        if (field === 'lastStatusAt') {
+          cmp = new Date(a.lastStatusAt).getTime() - new Date(b.lastStatusAt).getTime()
+        } else if (field === 'submittedAt') {
+          cmp = new Date(a.submission.submittedAt).getTime() - new Date(b.submission.submittedAt).getTime()
+        } else if (field === 'name') {
+          cmp = a.applicant.fullName.localeCompare(b.applicant.fullName)
+        } else if (field === 'risk') {
+          cmp = RISK_WEIGHT[a.risk.overall] - RISK_WEIGHT[b.risk.overall]
+        }
+        return cmp * dir
+      })
+  }, [searchMatches, activeTab, sortBy])
 
   const selectedCase = useMemo(
     () => filteredCases.find((c) => c.id === selectedId) || filteredCases[0] || null,
@@ -264,25 +297,42 @@ export default function KycQueue() {
           ))}
         </div>
 
-        <div className="search-wrapper">
-          <SearchIcon className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search by name, email or case ID..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {search && (
-            <button
-              className="search-clear"
-              type="button"
-              onClick={() => setSearch('')}
-              aria-label="Clear search"
-              title="Clear search"
+        <div className="toolbar-right">
+          <div className="search-wrapper">
+            <SearchIcon className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search by name, email or case ID..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                className="search-clear"
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Clear search"
+                title="Clear search"
+              >
+                <XIcon className="search-clear-icon" />
+              </button>
+            )}
+          </div>
+
+          <div className="sort-wrapper">
+            <label htmlFor="kyc-sort">Sort by</label>
+            <select
+              id="kyc-sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
             >
-              <XIcon className="search-clear-icon" />
-            </button>
-          )}
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
