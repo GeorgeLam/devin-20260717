@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Flag, FlagValue, Environment, ChangeRequest } from './types'
 import { useFlagStore } from './store'
+import KycQueue from './KycQueue'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -52,6 +53,15 @@ function FileTextIcon(props: { className?: string }) {
   )
 }
 
+function ShieldCheckIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 12 15 17 10" />
+    </svg>
+  )
+}
+
 function displayValue(value: FlagValue): string {
   if (typeof value === 'boolean') return value ? 'On' : 'Off'
   return value
@@ -76,7 +86,7 @@ function classNames(...classes: (string | false | undefined)[]) {
 
 const currentUser = 'demo-user'
 
-type Page = 'flags' | 'approvals'
+type Page = 'flags' | 'approvals' | 'kyc'
 
 export default function App() {
   const { flags, pendingRequests, updateStaging, requestProductionChange, approveRequest, rejectRequest } = useFlagStore()
@@ -154,6 +164,13 @@ export default function App() {
               Approval requests
               {pendingRequests.length > 0 && <span className="pending-pill">{pendingRequests.length}</span>}
             </button>
+            <button
+              className={classNames('nav-item', page === 'kyc' && 'active')}
+              onClick={() => setPage('kyc')}
+            >
+              <ShieldCheckIcon className="nav-icon" />
+              KYC Review
+            </button>
           </div>
         </nav>
 
@@ -171,9 +188,15 @@ export default function App() {
       <main className="main">
         <header className="topbar">
           <div className="topbar-title">
-            <h1>{page === 'approvals' ? 'Approval requests' : 'Feature flags'}</h1>
+            <h1>
+              {page === 'kyc' ? 'KYC Review' : page === 'approvals' ? 'Approval requests' : 'Feature flags'}
+            </h1>
             <span className="topbar-meta">
-              {page === 'approvals' ? 'Review pending production changes' : 'Manage staging and production configuration'}
+              {page === 'kyc'
+                ? 'Customer identity compliance queue'
+                : page === 'approvals'
+                  ? 'Review pending production changes'
+                  : 'Manage staging and production configuration'}
             </span>
           </div>
           <div className="topbar-actions">
@@ -182,7 +205,9 @@ export default function App() {
         </header>
 
         <div className="content">
-          {page === 'flags' ? (
+          {page === 'kyc' ? (
+            <KycQueue />
+          ) : page === 'flags' ? (
             <>
               <div className="page-header">
                 <h2>{env === 'staging' ? 'Staging flags' : 'Production flags'}</h2>
