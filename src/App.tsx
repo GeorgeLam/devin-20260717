@@ -440,6 +440,8 @@ export default function App() {
                       <div className="actions">
                         <button
                           className="btn btn-approve"
+                          disabled={flag.sensitive && req.requestedBy === currentUser}
+                          title={flag.sensitive && req.requestedBy === currentUser ? "You cannot approve your own sensitive flag requests" : undefined}
                           onClick={() => {
                             approveRequest(req.id)
                             const flag = flags.find((f) => f.id === req.flagId)
