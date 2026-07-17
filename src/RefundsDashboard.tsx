@@ -267,6 +267,10 @@ export default function RefundsDashboard() {
     }
   }, [refunds])
 
+  function scrollContentTop() {
+    document.querySelector('.content')?.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   function resetReject() {
     setRejecting(null)
     setRejectReason('')
@@ -278,6 +282,9 @@ export default function RefundsDashboard() {
     const reason = rejectReason === 'Other' ? rejectOther : rejectReason
     if (!reason.trim()) return
     rejectRefund(rejecting.id, reason.trim())
+    setActiveTab('rejected')
+    setSelectedId(rejecting.id)
+    scrollContentTop()
     resetReject()
   }
 
@@ -292,6 +299,9 @@ export default function RefundsDashboard() {
     const items = Array.from(selectedInfo).filter((i) => i !== 'Other')
     if (selectedInfo.has('Other') && infoOther.trim()) items.push(`Other: ${infoOther.trim()}`)
     requestInfo(requestingInfo.id, items, items.join(', '))
+    setActiveTab('waiting-for-info')
+    setSelectedId(requestingInfo.id)
+    scrollContentTop()
     resetInfo()
   }
 
@@ -303,6 +313,9 @@ export default function RefundsDashboard() {
   function submitFail() {
     if (!failing || !failureReason.trim()) return
     failRefund(failing.id, failureReason.trim())
+    setActiveTab('failed')
+    setSelectedId(failing.id)
+    scrollContentTop()
     resetFail()
   }
 
@@ -573,7 +586,15 @@ export default function RefundsDashboard() {
               <div className="kyc-detail-actions">
                 {selected.status === 'pending-review' && (
                   <>
-                    <button className="btn btn-approve" onClick={() => approveRefund(selected.id)} disabled={!isAssigned}>
+                    <button
+                      className="btn btn-approve"
+                      onClick={() => {
+                        approveRefund(selected.id)
+                        setActiveTab('approved')
+                        scrollContentTop()
+                      }}
+                      disabled={!isAssigned}
+                    >
                       Approve refund
                     </button>
                     <button className="btn btn-reject" onClick={() => setRejecting(selected)} disabled={!isAssigned}>
@@ -586,7 +607,15 @@ export default function RefundsDashboard() {
                 )}
                 {selected.status === 'approved' && (
                   <>
-                    <button className="btn btn-approve" onClick={() => processRefund(selected.id)} disabled={!isAssigned}>
+                    <button
+                      className="btn btn-approve"
+                      onClick={() => {
+                        processRefund(selected.id)
+                        setActiveTab('processed')
+                        scrollContentTop()
+                      }}
+                      disabled={!isAssigned}
+                    >
                       Mark as processed
                     </button>
                     <button className="btn btn-reject" onClick={() => setFailing(selected)} disabled={!isAssigned}>
@@ -595,12 +624,28 @@ export default function RefundsDashboard() {
                   </>
                 )}
                 {selected.status === 'waiting-for-info' && (
-                  <button className="btn" onClick={() => reopenRefund(selected.id)} disabled={!isAssigned}>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      reopenRefund(selected.id)
+                      setActiveTab('pending-review')
+                      scrollContentTop()
+                    }}
+                    disabled={!isAssigned}
+                  >
                     Reopen for review
                   </button>
                 )}
                 {(selected.status === 'rejected' || selected.status === 'processed' || selected.status === 'failed') && (
-                  <button className="btn" onClick={() => reopenRefund(selected.id)} disabled={!isAssigned}>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      reopenRefund(selected.id)
+                      setActiveTab('pending-review')
+                      scrollContentTop()
+                    }}
+                    disabled={!isAssigned}
+                  >
                     Reopen for review
                   </button>
                 )}
