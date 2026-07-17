@@ -167,7 +167,7 @@ function XIcon(props: { className?: string }) {
 }
 
 export default function KycQueue() {
-  const { cases, assignCase, approveCase, rejectCase, requestInfo, reopenCase, addNote } = useKycStore()
+  const { cases, assignCase, unassignCase, approveCase, rejectCase, requestInfo, reopenCase, addNote } = useKycStore()
   const [activeTab, setActiveTab] = useState<KycStatus>('in-review')
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('lastStatusAt-desc')
@@ -431,13 +431,15 @@ export default function KycQueue() {
                       Re-open
                     </button>
                   )}
-                  <button
-                    className="btn"
-                    onClick={() => assignCase(selectedCase.id)}
-                    disabled={selectedCase.assignedTo === currentUser}
-                  >
-                    {selectedCase.assignedTo === currentUser ? 'Assigned to you' : 'Assign to me'}
-                  </button>
+                  {selectedCase.assignedTo === currentUser ? (
+                    <button className="btn" onClick={() => unassignCase(selectedCase.id)}>
+                      Unassign
+                    </button>
+                  ) : (
+                    <button className="btn" onClick={() => assignCase(selectedCase.id)}>
+                      Assign to me
+                    </button>
+                  )}
                 </div>
               </div>
 

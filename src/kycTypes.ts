@@ -55,6 +55,7 @@ export interface KycAuditEvent {
     | 'case_created'
     | 'viewed'
     | 'assigned'
+    | 'unassigned'
     | 'status_changed'
     | 'approved'
     | 'rejected'

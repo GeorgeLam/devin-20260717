@@ -163,9 +163,24 @@ export function useKycStore() {
     })
   }
 
+  function unassignCase(caseId: string) {
+    updateCase(caseId, (item) => {
+      if (item.assignedTo !== currentUser) return item
+      const updated: KycCase = {
+        ...item,
+        assignedTo: undefined,
+        assignedAt: undefined,
+      }
+      return addAuditEvent(updated, 'unassigned', {
+        metadata: { previouslyAssignedTo: currentUser },
+      })
+    })
+  }
+
   return {
     cases: state.cases,
     assignCase,
+    unassignCase,
     approveCase,
     rejectCase,
     requestInfo,
