@@ -915,16 +915,17 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .kyc-list-sort {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  margin-bottom: 4px;
 }
 
 .kyc-list-sort label {
