@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.tsx'
 import { UserProvider } from './user.tsx'
 import { ThemeProvider } from './theme.tsx'
+import { ToastProvider } from './toast.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
       <UserProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </UserProvider>
     </ThemeProvider>
   </StrictMode>,

@@ -1484,3 +1484,52 @@ select.textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Toasts */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: toast-in 0.25s ease-out;
+  max-width: 320px;
+  line-height: 1.4;
+  pointer-events: auto;
+}
+
+.toast-success {
+  background: var(--success);
+}
+
+.toast-info {
+  background: var(--accent);
+}
+
+.toast-warning {
+  background: var(--warning);
+  color: #111827;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

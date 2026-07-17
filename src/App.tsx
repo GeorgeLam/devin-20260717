@@ -5,6 +5,7 @@ import KycQueue from './KycQueue'
 import RefundsDashboard from './RefundsDashboard'
 import { useCurrentUser, USERS, initialsFromName } from './user'
 import { useTheme } from './theme'
+import { useToast } from './toast'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -125,6 +126,7 @@ type Page = 'flags' | 'approvals' | 'kyc' | 'refunds'
 export default function App() {
   const { currentUser, setCurrentUser } = useCurrentUser()
   const { theme, toggleTheme } = useTheme()
+  const { addToast } = useToast()
   const { flags, pendingRequests, updateStaging, requestProductionChange, approveRequest, rejectRequest } = useFlagStore()
   const [page, setPage] = useState<Page>('flags')
   const [env, setEnv] = useState<Environment>('staging')
@@ -149,7 +151,9 @@ export default function App() {
       setConfirm({ flag, value: !current, reason: '' })
       return
     }
-    updateStaging(flag.id, !(flag.stagingValue as boolean))
+    const newValue = !(flag.stagingValue as boolean)
+    updateStaging(flag.id, newValue)
+    addToast(`${flag.name} is now ${newValue ? 'On' : 'Off'} in staging.`, 'success')
   }
 
   function handleEnumChange(flag: Flag, value: string) {
@@ -159,12 +163,17 @@ export default function App() {
       return
     }
     updateStaging(flag.id, value)
+    addToast(`${flag.name} is now set to ${value} in staging.`, 'success')
   }
 
   function submitRequest() {
     if (!confirm) return
     if (confirm.flag.sensitive && !confirm.reason.trim()) return
     requestProductionChange(confirm.flag.id, confirm.value, confirm.reason.trim())
+    addToast(
+      `Production change for ${confirm.flag.name} submitted and is pending approval.`,
+      confirm.flag.sensitive ? 'warning' : 'info',
+    )
     setConfirm(null)
   }
 
@@ -438,10 +447,24 @@ export default function App() {
                         )}
                       </div>
                       <div className="actions">
-                        <button className="btn btn-approve" onClick={() => approveRequest(req.id)}>
+                        <button
+                          className="btn btn-approve"
+                          onClick={() => {
+                            approveRequest(req.id)
+                            const flag = flags.find((f) => f.id === req.flagId)
+                            if (flag) addToast(`${flag.name} production change approved — now live.`, 'success')
+                          }}
+                        >
                           Approve
                         </button>
-                        <button className="btn btn-reject" onClick={() => rejectRequest(req.id)}>
+                        <button
+                          className="btn btn-reject"
+                          onClick={() => {
+                            rejectRequest(req.id)
+                            const flag = flags.find((f) => f.id === req.flagId)
+                            if (flag) addToast(`${flag.name} production change rejected.`, 'info')
+                          }}
+                        >
                           Reject
                         </button>
                       </div>
