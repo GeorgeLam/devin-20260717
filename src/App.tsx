@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Flag, FlagValue, Environment, ChangeRequest } from './types'
 import { useFlagStore } from './store'
 import KycQueue from './KycQueue'
+import RefundsDashboard from './RefundsDashboard'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -62,6 +63,15 @@ function ShieldCheckIcon(props: { className?: string }) {
   )
 }
 
+function CreditCardIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+      <line x1="1" y1="10" x2="23" y2="10" />
+    </svg>
+  )
+}
+
 function displayValue(value: FlagValue): string {
   if (typeof value === 'boolean') return value ? 'On' : 'Off'
   return value
@@ -86,7 +96,7 @@ function classNames(...classes: (string | false | undefined)[]) {
 
 const currentUser = 'demo-user'
 
-type Page = 'flags' | 'approvals' | 'kyc'
+type Page = 'flags' | 'approvals' | 'kyc' | 'refunds'
 
 export default function App() {
   const { flags, pendingRequests, updateStaging, requestProductionChange, approveRequest, rejectRequest } = useFlagStore()
@@ -171,6 +181,13 @@ export default function App() {
               <ShieldCheckIcon className="nav-icon" />
               KYC Review
             </button>
+            <button
+              className={classNames('nav-item', page === 'refunds' && 'active')}
+              onClick={() => setPage('refunds')}
+            >
+              <CreditCardIcon className="nav-icon" />
+              Refunds
+            </button>
           </div>
         </nav>
 
@@ -189,14 +206,22 @@ export default function App() {
         <header className="topbar">
           <div className="topbar-title">
             <h1>
-              {page === 'kyc' ? 'KYC Review' : page === 'approvals' ? 'Approval requests' : 'Feature flags'}
+              {page === 'kyc'
+                ? 'KYC Review'
+                : page === 'approvals'
+                  ? 'Approval requests'
+                  : page === 'refunds'
+                    ? 'Refunds'
+                    : 'Feature flags'}
             </h1>
             <span className="topbar-meta">
               {page === 'kyc'
                 ? 'Customer identity compliance queue'
                 : page === 'approvals'
                   ? 'Review pending production changes'
-                  : 'Manage staging and production configuration'}
+                  : page === 'refunds'
+                    ? 'Review and track refund requests'
+                    : 'Manage staging and production configuration'}
             </span>
           </div>
           <div className="topbar-actions">
@@ -207,6 +232,8 @@ export default function App() {
         <div className="content">
           {page === 'kyc' ? (
             <KycQueue />
+          ) : page === 'refunds' ? (
+            <RefundsDashboard />
           ) : page === 'flags' ? (
             <>
               <div className="page-header">
