@@ -4,6 +4,7 @@ import { useFlagStore } from './store'
 import KycQueue from './KycQueue'
 import RefundsDashboard from './RefundsDashboard'
 import { useCurrentUser, USERS, initialsFromName } from './user'
+import { useTheme } from './theme'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -30,6 +31,30 @@ function AlertIcon(props: { className?: string }) {
       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
       <line x1="12" y1="9" x2="12" y2="13" />
       <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
+function SunIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+  )
+}
+
+function MoonIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   )
 }
@@ -99,6 +124,7 @@ type Page = 'flags' | 'approvals' | 'kyc' | 'refunds'
 
 export default function App() {
   const { currentUser, setCurrentUser } = useCurrentUser()
+  const { theme, toggleTheme } = useTheme()
   const { flags, pendingRequests, updateStaging, requestProductionChange, approveRequest, rejectRequest } = useFlagStore()
   const [page, setPage] = useState<Page>('flags')
   const [env, setEnv] = useState<Environment>('staging')
@@ -235,6 +261,14 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-actions">
+            <button
+              className="theme-toggle"
+              onClick={toggleTheme}
+              title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+              aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            >
+              {theme === 'light' ? <MoonIcon className="theme-toggle-icon" /> : <SunIcon className="theme-toggle-icon" />}
+            </button>
             <div className="avatar" title={currentUser}>{initialsFromName(currentUser)}</div>
           </div>
         </header>
