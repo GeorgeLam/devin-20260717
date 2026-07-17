@@ -137,6 +137,22 @@ function paymentMethodLabel(method: string): string {
   return map[method] || method
 }
 
+function initialsFromName(name: string): string {
+  const parts = name.split(/[.\-_\s]+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function UserIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
 function SearchIcon(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -377,6 +393,12 @@ export default function RefundsDashboard() {
               <div className="kyc-list-header">
                 <span className="kyc-list-id">{r.id}</span>
                 <span className={classNames('badge', statusBadgeClass(r.status))}>{STATUS_LABELS[r.status]}</span>
+                <span
+                  className={classNames('kyc-list-assignee', !r.assignedTo && 'kyc-list-assignee-unassigned')}
+                  title={r.assignedTo ? `Assigned to ${r.assignedTo}` : 'Unassigned'}
+                >
+                  {r.assignedTo ? initialsFromName(r.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+                </span>
               </div>
               <div className="kyc-list-name">{r.customer.fullName}</div>
               <div className="kyc-list-meta">
