@@ -298,7 +298,7 @@ body {
 
 .search-wrapper input {
   width: 100%;
-  padding: 9px 12px 9px 38px;
+  padding: 9px 34px 9px 38px;
   border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 14px;
@@ -322,6 +322,33 @@ body {
   pointer-events: none;
   width: 18px;
   height: 18px;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 4px;
+  margin: 0;
+  cursor: pointer;
+  color: var(--text-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.search-clear:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.search-clear-icon {
+  width: 16px;
+  height: 16px;
 }
 
 /* Cards */

@@ -139,6 +139,15 @@ function SearchIcon(props: { className?: string }) {
   )
 }
 
+function XIcon(props: { className?: string }) {
+  return (
+    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  )
+}
+
 export default function KycQueue() {
   const { cases, assignCase, approveCase, rejectCase, requestInfo, reopenCase, addNote } = useKycStore()
   const [activeTab, setActiveTab] = useState<KycStatus>('in-review')
@@ -263,6 +272,17 @@ export default function KycQueue() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {search && (
+            <button
+              className="search-clear"
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              title="Clear search"
+            >
+              <XIcon className="search-clear-icon" />
+            </button>
+          )}
         </div>
       </div>
 
