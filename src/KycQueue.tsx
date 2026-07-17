@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { KycCase, KycStatus, KycRiskLevel } from './kycTypes'
 import { useKycStore } from './kycStore'
 import { useCurrentUser, initialsFromName } from './user'
+import SearchInput from './SearchInput'
 
 const STATUS_LABELS: Record<KycStatus, string> = {
   'in-review': 'In review',
@@ -132,24 +133,6 @@ function UserIcon(props: { className?: string }) {
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
-    </svg>
-  )
-}
-
-function SearchIcon(props: { className?: string }) {
-  return (
-    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  )
-}
-
-function XIcon(props: { className?: string }) {
-  return (
-    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   )
 }
@@ -286,26 +269,11 @@ export default function KycQueue() {
           ))}
         </div>
 
-        <div className="search-wrapper">
-          <SearchIcon className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search by name, email or case ID..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {search && (
-            <button
-              className="search-clear"
-              type="button"
-              onClick={() => setSearch('')}
-              aria-label="Clear search"
-              title="Clear search"
-            >
-              <XIcon className="search-clear-icon" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search by name, email or case ID..."
+        />
       </div>
 
       <div className="kyc-layout">

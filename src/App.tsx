@@ -6,6 +6,7 @@ import RefundsDashboard from './RefundsDashboard'
 import { useCurrentUser, USERS, initialsFromName } from './user'
 import { useTheme } from './theme'
 import { useToast } from './toast'
+import SearchInput from './SearchInput'
 import './index.css'
 
 function FlagIcon(props: { className?: string }) {
@@ -13,15 +14,6 @@ function FlagIcon(props: { className?: string }) {
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
       <line x1="4" y1="22" x2="4" y2="15" />
-    </svg>
-  )
-}
-
-function SearchIcon(props: { className?: string }) {
-  return (
-    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   )
 }
@@ -308,15 +300,11 @@ export default function App() {
                   </button>
                 </div>
 
-                <div className="search-wrapper">
-                  <SearchIcon className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search flags by name or key..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
+                <SearchInput
+                  value={search}
+                  onChange={setSearch}
+                  placeholder="Search flags by name or key..."
+                />
               </div>
 
               <div className="card">

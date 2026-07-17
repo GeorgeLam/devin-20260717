@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { RefundRequest, RefundStatus } from './refundTypes'
 import { useRefundStore } from './refundStore'
 import { useCurrentUser, initialsFromName } from './user'
+import SearchInput from './SearchInput'
 
 const STATUS_LABELS: Record<RefundStatus, string> = {
   'pending-review': 'Pending review',
@@ -145,23 +146,7 @@ function UserIcon(props: { className?: string }) {
   )
 }
 
-function SearchIcon(props: { className?: string }) {
-  return (
-    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  )
-}
 
-function XIcon(props: { className?: string }) {
-  return (
-    <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  )
-}
 
 function AlertIcon(props: { className?: string }) {
   return (
@@ -361,20 +346,11 @@ export default function RefundsDashboard() {
           ))}
         </div>
 
-        <div className="search-wrapper">
-          <SearchIcon className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search refunds by ID, customer or email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {search && (
-            <button className="search-clear" onClick={() => setSearch('')}>
-              <XIcon className="icon-small" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search refunds by ID, customer or email..."
+        />
       </div>
 
       <div className="kyc-layout">
