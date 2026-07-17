@@ -938,6 +938,32 @@ select:focus {
   gap: 6px;
 }
 
+.kyc-list-assignee {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c4b5fd, #818cf8);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.kyc-list-assignee-unassigned {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+}
+
+.kyc-list-assignee-icon {
+  width: 14px;
+  height: 14px;
+}
+
 .kyc-detail {
   background: var(--bg-card);
   border: 1px solid var(--border);

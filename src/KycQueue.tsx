@@ -101,6 +101,17 @@ function riskBadgeClass(risk: KycRiskLevel): string {
   }
 }
 
+function initialsFromName(name: string): string {
+  const parts = name.split(/[.\-_\s]+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function maybeCurrentUserInitials(name?: string): string | null {
+  return name ? initialsFromName(name) : null
+}
+
 function ShieldCheckIcon(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -261,6 +272,12 @@ export default function KycQueue() {
                 <span className="kyc-list-id">{item.id}</span>
                 <span className={classNames('badge', statusBadgeClass(item.status))}>{STATUS_LABELS[item.status]}</span>
                 <span className={classNames('badge', riskBadgeClass(item.risk.overall))}>{item.risk.overall}</span>
+                <div
+                  className={classNames('kyc-list-assignee', !item.assignedTo && 'kyc-list-assignee-unassigned')}
+                  title={item.assignedTo ? `Assigned to ${item.assignedTo}` : 'Unassigned'}
+                >
+                  {item.assignedTo ? maybeCurrentUserInitials(item.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+                </div>
               </div>
               <div className="kyc-list-name">{item.applicant.fullName}</div>
               <div className="kyc-list-meta">
