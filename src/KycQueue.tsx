@@ -152,29 +152,36 @@ export default function KycQueue() {
   const [infoOther, setInfoOther] = useState('')
   const [noteText, setNoteText] = useState('')
 
-  const filteredCases = useMemo(() => {
-    return cases
-      .filter((c) => c.status === activeTab)
-      .filter(
-        (c) =>
-          c.applicant.fullName.toLowerCase().includes(search.toLowerCase()) ||
-          c.id.toLowerCase().includes(search.toLowerCase()) ||
-          c.applicant.email.toLowerCase().includes(search.toLowerCase())
-      )
-      .sort((a, b) => new Date(b.lastStatusAt).getTime() - new Date(a.lastStatusAt).getTime())
-  }, [cases, activeTab, search])
+  const searchMatches = useMemo(() => {
+    const term = search.toLowerCase()
+    return cases.filter(
+      (c) =>
+        c.applicant.fullName.toLowerCase().includes(term) ||
+        c.id.toLowerCase().includes(term) ||
+        c.applicant.email.toLowerCase().includes(term)
+    )
+  }, [cases, search])
 
-  const selectedCase = useMemo(() => cases.find((c) => c.id === selectedId) || filteredCases[0] || null, [cases, selectedId, filteredCases])
+  const filteredCases = useMemo(() => {
+    return searchMatches
+      .filter((c) => c.status === activeTab)
+      .sort((a, b) => new Date(b.lastStatusAt).getTime() - new Date(a.lastStatusAt).getTime())
+  }, [searchMatches, activeTab])
+
+  const selectedCase = useMemo(
+    () => filteredCases.find((c) => c.id === selectedId) || filteredCases[0] || null,
+    [filteredCases, selectedId]
+  )
 
   const counts = useMemo(() => {
     return STATUS_ORDER.reduce(
       (acc, status) => {
-        acc[status] = cases.filter((c) => c.status === status).length
+        acc[status] = searchMatches.filter((c) => c.status === status).length
         return acc
       },
       {} as Record<KycStatus, number>
     )
-  }, [cases])
+  }, [searchMatches])
 
   function openReject(item: KycCase) {
     setRejecting(item)
