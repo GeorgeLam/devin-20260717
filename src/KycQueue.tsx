@@ -299,21 +299,21 @@ export default function KycQueue() {
                       <button
                         className="btn btn-approve"
                         onClick={() => approveCase(selectedCase.id)}
-                        disabled={!!selectedCase.assignedTo && selectedCase.assignedTo !== currentUser}
+                        disabled={selectedCase.assignedTo !== currentUser}
                       >
                         Approve
                       </button>
                       <button
                         className="btn btn-reject"
                         onClick={() => openReject(selectedCase)}
-                        disabled={!!selectedCase.assignedTo && selectedCase.assignedTo !== currentUser}
+                        disabled={selectedCase.assignedTo !== currentUser}
                       >
                         Reject
                       </button>
                       <button
                         className="btn"
                         onClick={() => openRequestInfo(selectedCase)}
-                        disabled={!!selectedCase.assignedTo && selectedCase.assignedTo !== currentUser}
+                        disabled={selectedCase.assignedTo !== currentUser}
                       >
                         Request information
                       </button>
@@ -321,13 +321,21 @@ export default function KycQueue() {
                   )}
                   {selectedCase.status === 'waiting-for-info' && (
                     <>
-                      <button className="btn btn-approve" onClick={() => reopenCase(selectedCase.id)}>
+                      <button
+                        className="btn btn-approve"
+                        onClick={() => reopenCase(selectedCase.id)}
+                        disabled={selectedCase.assignedTo !== currentUser}
+                      >
                         Re-open for review
                       </button>
                     </>
                   )}
                   {(selectedCase.status === 'approved' || selectedCase.status === 'rejected') && (
-                    <button className="btn" onClick={() => reopenCase(selectedCase.id)}>
+                    <button
+                      className="btn"
+                      onClick={() => reopenCase(selectedCase.id)}
+                      disabled={selectedCase.assignedTo !== currentUser}
+                    >
                       Re-open
                     </button>
                   )}
@@ -341,12 +349,17 @@ export default function KycQueue() {
                 </div>
               </div>
 
-              {selectedCase.assignedTo && selectedCase.assignedTo !== currentUser && (
+              {!selectedCase.assignedTo ? (
+                <div className="alert">
+                  <UserIcon className="alert-icon" />
+                  This case is not assigned. Assign it to yourself before you can approve, reject, or request information.
+                </div>
+              ) : selectedCase.assignedTo !== currentUser ? (
                 <div className="alert">
                   <UserIcon className="alert-icon" />
                   This case is assigned to {selectedCase.assignedTo}. You can still view details, but you should assign it to yourself before taking action.
                 </div>
-              )}
+              ) : null}
 
               <div className="kyc-grid">
                 <div className="kyc-section">
