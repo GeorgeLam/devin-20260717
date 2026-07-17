@@ -297,29 +297,31 @@ export default function KycQueue() {
           ))}
         </div>
 
-        <div className="toolbar-right">
-          <div className="search-wrapper">
-            <SearchIcon className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search by name, email or case ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {search && (
-              <button
-                className="search-clear"
-                type="button"
-                onClick={() => setSearch('')}
-                aria-label="Clear search"
-                title="Clear search"
-              >
-                <XIcon className="search-clear-icon" />
-              </button>
-            )}
-          </div>
+        <div className="search-wrapper">
+          <SearchIcon className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search by name, email or case ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <button
+              className="search-clear"
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              title="Clear search"
+            >
+              <XIcon className="search-clear-icon" />
+            </button>
+          )}
+        </div>
+      </div>
 
-          <div className="sort-wrapper">
+      <div className="kyc-layout">
+        <div className="kyc-list">
+          <div className="kyc-list-sort">
             <label htmlFor="kyc-sort">Sort by</label>
             <select
               id="kyc-sort"
@@ -333,11 +335,7 @@ export default function KycQueue() {
               ))}
             </select>
           </div>
-        </div>
-      </div>
 
-      <div className="kyc-layout">
-        <div className="kyc-list">
           {filteredCases.length === 0 && <div className="panel-empty">No cases match this tab.</div>}
           {filteredCases.map((item) => (
             <button

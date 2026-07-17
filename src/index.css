@@ -244,30 +244,6 @@ body {
   flex-wrap: wrap;
 }
 
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.sort-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sort-wrapper label {
-  font-size: 13px;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.sort-wrapper select {
-  min-width: 180px;
-}
-
 .tabs {
   display: inline-flex;
   background: var(--bg-subtle);
@@ -911,15 +887,8 @@ select:focus {
     align-items: stretch;
   }
 
-  .toolbar-right {
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-  }
-
   .search-wrapper,
-  .sort-wrapper,
-  .sort-wrapper select {
+  .kyc-list-sort select {
     max-width: 100%;
     width: 100%;
   }
@@ -946,6 +915,27 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.kyc-list-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.kyc-list-sort label {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.kyc-list-sort select {
+  flex: 1;
+  min-width: 0;
 }
 
 .kyc-list-item {
