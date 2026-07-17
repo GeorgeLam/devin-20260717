@@ -280,7 +280,7 @@ export default function App() {
           ) : page === 'refunds' ? (
             <RefundsDashboard />
           ) : page === 'flags' ? (
-            <>
+            <div className="page flags-page">
               <div className="page-header">
                 <h2>{env === 'staging' ? 'Staging flags' : 'Production flags'}</h2>
                 <p>
@@ -307,8 +307,9 @@ export default function App() {
                 />
               </div>
 
-              <div className="card">
-                <table>
+              <div className="page-body">
+                <div className="card">
+                  <table>
                   <thead>
                     <tr>
                       <th>Flag</th>
@@ -401,16 +402,18 @@ export default function App() {
                   </tbody>
                 </table>
               </div>
-            </>
+            </div>
+            </div>
           ) : (
-            <>
+            <div className="page approvals-page">
               <div className="page-header">
                 <h2>Pending approval requests</h2>
                 <p>Review and approve or reject production change requests before they take effect.</p>
               </div>
 
-              <div className="card">
-                {pendingRequests.length === 0 && <div className="panel-empty">No pending approval requests.</div>}
+              <div className="page-body">
+                <div className="card">
+                  {pendingRequests.length === 0 && <div className="panel-empty">No pending approval requests.</div>}
                 {pendingRequests.map((req) => {
                   const flag = flags.find((f) => f.id === req.flagId)
                   if (!flag) return null
@@ -460,7 +463,8 @@ export default function App() {
                   )
                 })}
               </div>
-            </>
+            </div>
+            </div>
           )}
         </div>
       </main>

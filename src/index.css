@@ -51,20 +51,22 @@ html[data-theme='dark'] {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
-  min-height: 100vh;
   background: var(--bg-body);
   color: var(--text-primary);
 }
 
-#root {
-  min-height: 100vh;
-}
-
 .app {
   display: flex;
-  min-height: 100vh;
 }
 
 /* Sidebar */
@@ -297,8 +299,40 @@ body {
 
 .content {
   padding: 32px;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.page > .page-header,
+.page > .toolbar,
+.page > .metrics-grid {
+  flex-shrink: 0;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-body > .card {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .page-header {
@@ -326,6 +360,7 @@ body {
   gap: 16px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .tabs {
@@ -1025,19 +1060,34 @@ select:focus {
 .kyc-layout {
   display: grid;
   grid-template-columns: 320px 1fr;
+  grid-template-rows: 1fr;
   gap: 0;
-  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .kyc-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-right: none;
   border-radius: 12px 0 0 12px;
   padding: 12px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.kyc-list-items {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
 }
 
 .kyc-list-sort {
@@ -1140,6 +1190,8 @@ select:focus {
   border-left: none;
   border-radius: 0 12px 12px 0;
   padding: 24px;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .kyc-detail-header {
@@ -1497,6 +1549,7 @@ select.textarea {
 @media (max-width: 1100px) {
   .kyc-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(240px, 1fr) minmax(240px, 1fr);
     gap: 16px;
   }
 

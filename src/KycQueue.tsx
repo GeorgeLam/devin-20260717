@@ -246,7 +246,7 @@ export default function KycQueue() {
   }
 
   return (
-    <>
+    <div className="kyc-page page">
       <div className="page-header">
         <h2>KYC review queue</h2>
         <p>Review customer identity cases and maintain the FCA audit trail.</p>
@@ -293,38 +293,40 @@ export default function KycQueue() {
             </select>
           </div>
 
-          {filteredCases.length === 0 && <div className="panel-empty">No cases match this tab.</div>}
-          {filteredCases.map((item) => (
-            <button
-              key={item.id}
-              className={classNames('kyc-list-item', selectedCase?.id === item.id && 'active')}
-              onClick={() => setSelectedId(item.id)}
-            >
-              <div className="kyc-list-header">
-                <span className="kyc-list-id">{item.id}</span>
-                <span className={classNames('badge', statusBadgeClass(item.status))}>{STATUS_LABELS[item.status]}</span>
-                <span className={classNames('badge', riskBadgeClass(item.risk.overall))}>{item.risk.overall}</span>
-                <div
-                  className={classNames('kyc-list-assignee', !item.assignedTo && 'kyc-list-assignee-unassigned')}
-                  title={item.assignedTo ? `Assigned to ${item.assignedTo}` : 'Unassigned'}
-                >
-                  {item.assignedTo ? initialsFromName(item.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+          <div className="kyc-list-items">
+            {filteredCases.length === 0 && <div className="panel-empty">No cases match this tab.</div>}
+            {filteredCases.map((item) => (
+              <button
+                key={item.id}
+                className={classNames('kyc-list-item', selectedCase?.id === item.id && 'active')}
+                onClick={() => setSelectedId(item.id)}
+              >
+                <div className="kyc-list-header">
+                  <span className="kyc-list-id">{item.id}</span>
+                  <span className={classNames('badge', statusBadgeClass(item.status))}>{STATUS_LABELS[item.status]}</span>
+                  <span className={classNames('badge', riskBadgeClass(item.risk.overall))}>{item.risk.overall}</span>
+                  <div
+                    className={classNames('kyc-list-assignee', !item.assignedTo && 'kyc-list-assignee-unassigned')}
+                    title={item.assignedTo ? `Assigned to ${item.assignedTo}` : 'Unassigned'}
+                  >
+                    {item.assignedTo ? initialsFromName(item.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+                  </div>
                 </div>
-              </div>
-              <div className="kyc-list-name">{item.applicant.fullName}</div>
-              <div className="kyc-list-meta">
-                <span>{item.document.type.replace('-', ' ')}</span>
-                <span>·</span>
-                <span className={isOverdue(item) ? 'kyc-overdue' : ''}>{ageInStatus(item)}</span>
-                {item.assignedTo && (
-                  <>
-                    <span>·</span>
-                    <span>{item.assignedTo === currentUser ? 'Assigned to you' : `Assigned to ${item.assignedTo}`}</span>
-                  </>
-                )}
-              </div>
-            </button>
-          ))}
+                <div className="kyc-list-name">{item.applicant.fullName}</div>
+                <div className="kyc-list-meta">
+                  <span>{item.document.type.replace('-', ' ')}</span>
+                  <span>·</span>
+                  <span className={isOverdue(item) ? 'kyc-overdue' : ''}>{ageInStatus(item)}</span>
+                  {item.assignedTo && (
+                    <>
+                      <span>·</span>
+                      <span>{item.assignedTo === currentUser ? 'Assigned to you' : `Assigned to ${item.assignedTo}`}</span>
+                    </>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="kyc-detail">
@@ -749,6 +751,6 @@ export default function KycQueue() {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }

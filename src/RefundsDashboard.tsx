@@ -304,7 +304,7 @@ export default function RefundsDashboard() {
   }
 
   return (
-    <>
+    <div className="refunds-page page">
       <div className="page-header">
         <h2>Refunds dashboard</h2>
         <p>Review, approve, and track customer refunds and chargebacks.</p>
@@ -366,39 +366,41 @@ export default function RefundsDashboard() {
             </select>
           </div>
 
-          {filteredRefunds.map((r) => (
-            <button
-              key={r.id}
-              className={classNames('kyc-list-item', selected?.id === r.id && 'active')}
-              onClick={() => setSelectedId(r.id)}
-            >
-              <div className="kyc-list-header">
-                <span className="kyc-list-id">{r.id}</span>
-                <span className={classNames('badge', statusBadgeClass(r.status))}>{STATUS_LABELS[r.status]}</span>
-                <span
-                  className={classNames('kyc-list-assignee', !r.assignedTo && 'kyc-list-assignee-unassigned')}
-                  title={r.assignedTo ? `Assigned to ${r.assignedTo}` : 'Unassigned'}
-                >
-                  {r.assignedTo ? initialsFromName(r.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
-                </span>
-              </div>
-              <div className="kyc-list-name">{r.customer.fullName}</div>
-              <div className="kyc-list-meta">
-                <span>{formatMoney(r.refundAmount)}</span>
-                <span>·</span>
-                <span>{ageInStatus(r)}</span>
-                <span>·</span>
-                <span>{channelLabel(r.requestChannel)}</span>
-              </div>
-              {(r.risk.isHighValue || r.requestChannel === 'chargeback') && (
-                <div className="refund-list-warning">
-                  {r.risk.isHighValue && <span className="badge badge-sensitive">High value</span>}
-                  {r.requestChannel === 'chargeback' && <span className="badge badge-warning">Disputed</span>}
+          <div className="kyc-list-items">
+            {filteredRefunds.map((r) => (
+              <button
+                key={r.id}
+                className={classNames('kyc-list-item', selected?.id === r.id && 'active')}
+                onClick={() => setSelectedId(r.id)}
+              >
+                <div className="kyc-list-header">
+                  <span className="kyc-list-id">{r.id}</span>
+                  <span className={classNames('badge', statusBadgeClass(r.status))}>{STATUS_LABELS[r.status]}</span>
+                  <span
+                    className={classNames('kyc-list-assignee', !r.assignedTo && 'kyc-list-assignee-unassigned')}
+                    title={r.assignedTo ? `Assigned to ${r.assignedTo}` : 'Unassigned'}
+                  >
+                    {r.assignedTo ? initialsFromName(r.assignedTo) : <UserIcon className="kyc-list-assignee-icon" />}
+                  </span>
                 </div>
-              )}
-            </button>
-          ))}
-          {filteredRefunds.length === 0 && <div className="panel-empty">No refunds match this search.</div>}
+                <div className="kyc-list-name">{r.customer.fullName}</div>
+                <div className="kyc-list-meta">
+                  <span>{formatMoney(r.refundAmount)}</span>
+                  <span>·</span>
+                  <span>{ageInStatus(r)}</span>
+                  <span>·</span>
+                  <span>{channelLabel(r.requestChannel)}</span>
+                </div>
+                {(r.risk.isHighValue || r.requestChannel === 'chargeback') && (
+                  <div className="refund-list-warning">
+                    {r.risk.isHighValue && <span className="badge badge-sensitive">High value</span>}
+                    {r.requestChannel === 'chargeback' && <span className="badge badge-warning">Disputed</span>}
+                  </div>
+                )}
+              </button>
+            ))}
+            {filteredRefunds.length === 0 && <div className="panel-empty">No refunds match this search.</div>}
+          </div>
         </div>
 
         {selected ? (
@@ -812,6 +814,6 @@ export default function RefundsDashboard() {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
