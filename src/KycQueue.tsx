@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { KycCase, KycStatus, KycRiskLevel } from './kycTypes'
 import { useKycStore } from './kycStore'
 import { useCurrentUser, initialsFromName } from './user'
+import { safeDocumentImageUrl } from './kycImageUrl'
 import SearchInput from './SearchInput'
 
 const STATUS_LABELS: Record<KycStatus, string> = {
@@ -134,6 +135,22 @@ function UserIcon(props: { className?: string }) {
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
+  )
+}
+
+function DocumentImage(props: { url?: string; alt: string; label: string }) {
+  const safeUrl = safeDocumentImageUrl(props.url)
+  return (
+    <div className="kyc-doc">
+      {safeUrl ? (
+        <img src={safeUrl} alt={props.alt} referrerPolicy="no-referrer" />
+      ) : (
+        <div className="kyc-doc-blocked" role="img" aria-label={`${props.alt} unavailable`}>
+          Image blocked
+        </div>
+      )}
+      <span>{props.label}</span>
+    </div>
   )
 }
 
@@ -450,21 +467,12 @@ export default function KycQueue() {
                 <div className="kyc-section">
                   <h4 className="section-title">Submitted documents</h4>
                   <div className="kyc-docs">
-                    <div className="kyc-doc">
-                      <img src={selectedCase.document.frontImageUrl} alt="Document front" />
-                      <span>Front</span>
-                    </div>
+                    <DocumentImage url={selectedCase.document.frontImageUrl} alt="Document front" label="Front" />
                     {selectedCase.document.backImageUrl && (
-                      <div className="kyc-doc">
-                        <img src={selectedCase.document.backImageUrl} alt="Document back" />
-                        <span>Back</span>
-                      </div>
+                      <DocumentImage url={selectedCase.document.backImageUrl} alt="Document back" label="Back" />
                     )}
                     {selectedCase.document.selfieImageUrl && (
-                      <div className="kyc-doc">
-                        <img src={selectedCase.document.selfieImageUrl} alt="Selfie" />
-                        <span>Selfie</span>
-                      </div>
+                      <DocumentImage url={selectedCase.document.selfieImageUrl} alt="Selfie" label="Selfie" />
                     )}
                   </div>
                   <div className="kyc-field">
