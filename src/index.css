@@ -1285,6 +1285,21 @@ select:focus {
   background: var(--bg-subtle);
 }
 
+.kyc-doc-blocked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 90px;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 11px;
+  text-align: center;
+  padding: 0 8px;
+}
+
 .kyc-doc span {
   font-size: 11px;
   color: var(--text-muted);
